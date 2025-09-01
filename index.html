@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nigerian Stories - Interactive Storytelling App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-book-open"></i>
+                <span>Nigerian Stories</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#home" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#stories" class="nav-link">
+                    <i class="fas fa-book"></i>
+                    <span>Stories</span>
+                </a>
+                <a href="#games" class="nav-link">
+                    <i class="fas fa-gamepad"></i>
+                    <span>Games</span>
+                </a>
+                <a href="#activities" class="nav-link">
+                    <i class="fas fa-palette"></i>
+                    <span>Activities</span>
+                </a>
+                <a href="#community" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Community</span>
+                </a>
+            </div>
+            <div class="nav-controls">
+                <div class="language-selector">
+                    <i class="fas fa-globe"></i>
+                    <select id="languageSelect">
+                        <option value="en">English</option>
+                        <option value="ha">Hausa</option>
+                        <option value="yo">Yoruba</option>
+                        <option value="ig">Igbo</option>
+                    </select>
+                </div>
+                <div class="audio-controls">
+                    <button class="audio-toggle" id="audioToggle" onclick="toggleAudio()" title="Toggle Audio Narration">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                </div>
+                <div class="user-profile">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="userName">Guest</span>
+                </div>
+                <div class="payment-access">
+                    <button class="btn btn-premium" onclick="openPaymentModal()" title="Premium Access">
+                        <i class="fas fa-crown"></i>
+                        <span>Go Premium</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="title-main">Welcome to Nigerian Stories</span>
+                        <span class="title-sub">Discover Amazing Tales & Adventures</span>
+                    </h1>
+                    <p class="hero-description">
+                        Explore beautiful stories, fun games, and exciting activities in multiple Nigerian languages!
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="navigateToSection('stories')">
+                            <i class="fas fa-play"></i>
+                            Start Reading
+                        </button>
+                        <button class="btn btn-secondary" onclick="navigateToSection('games')">
+                            <i class="fas fa-gamepad"></i>
+                            Play Games
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="floating-elements">
+                        <div class="floating-icon" style="--delay: 0s">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="floating-icon" style="--delay: 1s">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="floating-icon" style="--delay: 2s">
+                            <i class="fas fa-moon"></i>
+                        </div>
+                        <div class="floating-icon" style="--delay: 3s">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3>Multilingual Stories</h3>
+                    <p>Read stories in Hausa, Yoruba, Igbo, and English</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3>Interactive Games</h3>
+                    <p>Fun educational games based on stories</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3>Creative Activities</h3>
+                    <p>Draw, color, and create your own stories</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Community Sharing</h3>
+                    <p>Share your creations with friends</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stories Section -->
+        <section id="stories" class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-book"></i> Story Library</h2>
+                <div class="filter-controls">
+                    <select id="storyLanguageFilter">
+                        <option value="all">All Languages</option>
+                        <option value="en">English</option>
+                        <option value="ha">Hausa</option>
+                        <option value="yo">Yoruba</option>
+                        <option value="ig">Igbo</option>
+                    </select>
+                    <select id="storyCategoryFilter">
+                        <option value="all">All Categories</option>
+                        <option value="folktale">Folktales</option>
+                        <option value="adventure">Adventure</option>
+                        <option value="educational">Educational</option>
+                        <option value="fantasy">Fantasy</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="stories-grid" id="storiesGrid">
+                <!-- Stories will be populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Games Section -->
+        <section id="games" class="section">
+            <div class="section-header">
+                <h2>🎮 Educational Games</h2>
+                <p>Learn and have fun with interactive games based on Nigerian stories</p>
+            </div>
+            <div class="games-grid">
+                <div class="game-card" onclick="createGame('memory')">
+                    <div class="game-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Memory Match</h3>
+                    <p>Match story characters and elements to test your memory</p>
+                    <div class="game-features">
+                        <span>Memory</span>
+                        <span>Matching</span>
+                        <span>Fun</span>
+                    </div>
+                </div>
+                <div class="game-card" onclick="createGame('puzzle')">
+                    <div class="game-icon">
+                        <i class="fas fa-puzzle-piece"></i>
+                    </div>
+                    <h3>Story Puzzle</h3>
+                    <p>Complete story scenes by arranging puzzle pieces</p>
+                    <div class="game-features">
+                        <span>Logic</span>
+                        <span>Problem Solving</span>
+                        <span>Creative</span>
+                    </div>
+                </div>
+                <div class="game-card" onclick="createGame('quiz')">
+                    <div class="game-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <h3>Story Quiz</h3>
+                    <p>Test your knowledge of Nigerian stories with fun questions</p>
+                    <div class="game-features">
+                        <span>Knowledge</span>
+                        <span>Learning</span>
+                        <span>Challenge</span>
+                    </div>
+                </div>
+                <div class="game-card" onclick="createGame('coloring')">
+                    <div class="game-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3>Story Coloring</h3>
+                    <p>Color beautiful illustrations from Nigerian stories</p>
+                    <div class="game-features">
+                        <span>Art</span>
+                        <span>Creativity</span>
+                        <span>Relaxing</span>
+                    </div>
+                </div>
+                <div class="game-card" onclick="createGame('word-scramble')">
+                    <div class="game-icon">
+                        <i class="fas fa-language"></i>
+                    </div>
+                    <h3>Word Scramble</h3>
+                    <p>Unscramble words from Nigerian stories and learn their meanings</p>
+                    <div class="game-features">
+                        <span>Language</span>
+                        <span>Vocabulary</span>
+                        <span>Educational</span>
+                    </div>
+                </div>
+                <div class="game-card" onclick="createGame('story-sequencer')">
+                    <div class="game-icon">
+                        <i class="fas fa-sort-amount-down"></i>
+                    </div>
+                    <h3>Story Sequencer</h3>
+                    <p>Arrange story parts in the correct order to complete the tale</p>
+                    <div class="game-features">
+                        <span>Logic</span>
+                        <span>Sequencing</span>
+                        <span>Storytelling</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Activities Section -->
+        <section id="activities" class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-palette"></i> Creative Activities</h2>
+                <p>Express your creativity with fun activities!</p>
+            </div>
+
+            <div class="activities-container">
+                <div class="activity-tabs">
+                    <button class="activity-tab active" data-activity="drawing">
+                        <i class="fas fa-pencil-alt"></i>
+                        Drawing
+                    </button>
+                    <button class="activity-tab" data-activity="coloring">
+                        <i class="fas fa-palette"></i>
+                        Coloring
+                    </button>
+                    <button class="activity-tab" data-activity="story-creation">
+                        <i class="fas fa-edit"></i>
+                        Story Creation
+                    </button>
+                </div>
+
+                <div class="activity-content">
+                    <div id="drawing" class="activity-panel active">
+                        <div class="drawing-canvas-container">
+                            <canvas id="drawingCanvas" width="800" height="600"></canvas>
+                            <div class="drawing-tools">
+                                <button class="tool-btn active" data-tool="pencil">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                                <button class="tool-btn" data-tool="brush">
+                                    <i class="fas fa-paint-brush"></i>
+                                </button>
+                                <button class="tool-btn" data-tool="eraser">
+                                    <i class="fas fa-eraser"></i>
+                                </button>
+                                <input type="color" id="colorPicker" value="#000000">
+                                <input type="range" id="brushSize" min="1" max="20" value="5">
+                                <button class="clear-btn" onclick="clearCanvas()">
+                                    <i class="fas fa-trash"></i>
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="coloring" class="activity-panel">
+                        <div class="coloring-gallery">
+                            <h3>Choose a Picture to Color</h3>
+                            <div class="coloring-images">
+                                <div class="coloring-image" onclick="selectColoringImage('lion')">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ3aGl0ZSIvPgo8Y2lyY2xlIGN4PSIxMDAiIGN5PSIxMDAiIHI9IjgwIiBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIxMDAiIHk9IjExMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMzMzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5MaW9uPC90ZXh0Pgo8L3N2Zz4K" alt="Lion">
+                                    <span>Lion</span>
+                                </div>
+                                <div class="coloring-image" onclick="selectColoringImage('elephant')">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ3aGl0ZSIvPgo8ZWxsaXBzZSBjeD0iMTAwIiBjeT0iMTAwIiByeD0iODAiIHJ5PSI2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzIiBzdHJva2Utd2lkdGg9IjIiLz4KPHRleHQgeD0iMTAwIiB5PSIxMTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RWxlcGhhbnQ8L3RleHQ+Cjwvc3ZnPgo=" alt="Elephant">
+                                    <span>Elephant</span>
+                                </div>
+                                <div class="coloring-image" onclick="selectColoringImage('tree')">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNIDEwMCAyMCBMIDEyMCA4MCBMIDEwMCAxMDAgTCA4MCA4MCBaIiBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMiIHN0cm9rZS13aWR0aD0iMiIvPgo8cmVjdCB4PSI5NSIgeT0iMTAwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAwIiBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSIxMDAiIHk9IjIzMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMzMzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5UcmVlPC90ZXh0Pgo8L3N2Zz4K" alt="Tree">
+                                    <span>Tree</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="story-creation" class="activity-panel">
+                        <div class="story-creator">
+                            <h3>Create Your Own Story</h3>
+                            <div class="story-form">
+                                <div class="form-group">
+                                    <label for="storyTitle">Story Title:</label>
+                                    <input type="text" id="storyTitle" placeholder="Enter your story title">
+                                </div>
+                                <div class="form-group">
+                                    <label for="storyLanguage">Language:</label>
+                                    <select id="storyLanguage">
+                                        <option value="en">English</option>
+                                        <option value="ha">Hausa</option>
+                                        <option value="yo">Yoruba</option>
+                                        <option value="ig">Igbo</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="storyContent">Your Story:</label>
+                                    <textarea id="storyContent" rows="10" placeholder="Write your amazing story here..."></textarea>
+                                </div>
+                                <button class="btn btn-primary" onclick="saveStory()">
+                                    <i class="fas fa-save"></i>
+                                    Save Story
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Section -->
+        <section id="community" class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-users"></i> Community</h2>
+                <p>Share your creations and discover stories from other children!</p>
+            </div>
+
+            <div class="community-container">
+                <div class="community-tabs">
+                    <button class="community-tab active" data-tab="shared-stories">
+                        <i class="fas fa-book"></i>
+                        Shared Stories
+                    </button>
+                    <button class="community-tab" data-tab="artwork">
+                        <i class="fas fa-palette"></i>
+                        Artwork Gallery
+                    </button>
+                    <button class="community-tab" data-tab="achievements">
+                        <i class="fas fa-trophy"></i>
+                        Achievements
+                    </button>
+                </div>
+
+                <div class="community-content">
+                    <div id="shared-stories" class="community-panel active">
+                        <div class="shared-stories-grid" id="sharedStoriesGrid">
+                            <!-- Shared stories will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div id="artwork" class="community-panel">
+                        <div class="artwork-gallery" id="artworkGallery">
+                            <!-- Artwork will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div id="achievements" class="community-panel">
+                        <div class="achievements-grid">
+                            <div class="achievement-card unlocked">
+                                <div class="achievement-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <h4>First Story</h4>
+                                <p>Read your first story</p>
+                                <div class="achievement-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 100%"></div>
+                                    </div>
+                                    <span>1/1</span>
+                                </div>
+                            </div>
+                            <div class="achievement-card unlocked">
+                                <div class="achievement-icon">
+                                    <i class="fas fa-gamepad"></i>
+                                </div>
+                                <h4>Game Master</h4>
+                                <p>Play 5 different games</p>
+                                <div class="achievement-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 80%"></div>
+                                    </div>
+                                    <span>4/5</span>
+                                </div>
+                            </div>
+                            <div class="achievement-card locked">
+                                <div class="achievement-icon">
+                                    <i class="fas fa-palette"></i>
+                                </div>
+                                <h4>Artist</h4>
+                                <p>Create 10 drawings</p>
+                                <div class="achievement-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 30%"></div>
+                                    </div>
+                                    <span>3/10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Story Reader Modal -->
+    <div id="storyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalStoryTitle">Story Title</h3>
+                <button class="close-btn" onclick="closeStoryModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="story-content">
+                    <div class="story-text" id="modalStoryText">
+                        <!-- Story content will be populated -->
+                    </div>
+                    <div class="story-controls">
+                        <button class="btn btn-secondary" onclick="previousPage()">
+                            <i class="fas fa-chevron-left"></i>
+                            Previous
+                        </button>
+                        <span class="page-indicator">
+                            Page <span id="currentPage">1</span> of <span id="totalPages">1</span>
+                        </span>
+                        <button class="btn btn-primary" onclick="nextPage()">
+                            Next
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Modal -->
+    <div id="gameModal" class="modal">
+        <div class="modal-content game-modal">
+            <div class="modal-header">
+                <h3 id="gameTitle">Game Title</h3>
+                <button class="close-btn" onclick="closeGameModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="gameContainer">
+                    <!-- Game content will be populated -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Tracking -->
+    <div class="progress-tracker">
+        <div class="progress-item">
+            <i class="fas fa-book-open"></i>
+            <span>Stories Read: <span id="storiesRead">0</span></span>
+        </div>
+        <div class="progress-item">
+            <i class="fas fa-gamepad"></i>
+            <span>Games Played: <span id="gamesPlayed">0</span></span>
+        </div>
+        <div class="progress-item">
+            <i class="fas fa-palette"></i>
+            <span>Artworks Created: <span id="artworksCreated">0</span></span>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-panel">
+        <h3>🔧 Admin Panel</h3>
+        <p>Manage user-submitted content and moderate the platform.</p>
+        
+        <div class="admin-section">
+            <h4>📚 Pending Stories</h4>
+            <div id="pendingStoriesList">
+                <!-- Pending stories will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="admin-section">
+            <h4>🎨 Pending Artworks</h4>
+            <div id="pendingArtworksList">
+                <!-- Pending artworks will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="admin-controls">
+            <button class="btn btn-secondary" onclick="advancedFeatures.contentManager.disableAdminMode()">
+                <i class="fas fa-times"></i> Close Admin Panel
+            </button>
+        </div>
+    </div>
+
+    <!-- User Management Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="userModalTitle">User Account</h3>
+                <button class="modal-close" onclick="closeUserModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="loginForm" class="user-form">
+                    <h4>Login to Your Account</h4>
+                    <form onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label for="loginEmail">Email:</label>
+                            <input type="email" id="loginEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password:</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                    <p>Don't have an account? <a href="#" onclick="showRegisterForm()">Register here</a></p>
+                </div>
+                
+                <div id="registerForm" class="user-form" style="display: none;">
+                    <h4>Create New Account</h4>
+                    <form onsubmit="handleRegister(event)">
+                        <div class="form-group">
+                            <label for="registerUsername">Username:</label>
+                            <input type="text" id="registerUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Email:</label>
+                            <input type="email" id="registerEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Password:</label>
+                            <input type="password" id="registerPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerAge">Age:</label>
+                            <input type="number" id="registerAge" min="5" max="18" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </form>
+                    <p>Already have an account? <a href="#" onclick="showLoginForm()">Login here</a></p>
+                </div>
+                
+                <div id="userProfile" class="user-profile-section" style="display: none;">
+                    <h4>Welcome, <span id="profileUsername"></span>!</h4>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-book"></i>
+                            <span>Stories Read: <span id="profileStoriesRead">0</span></span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-gamepad"></i>
+                            <span>Games Played: <span id="profileGamesPlayed">0</span></span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-palette"></i>
+                            <span>Artworks Created: <span id="profileArtworksCreated">0</span></span>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Features Modal -->
+    <div id="socialModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>👥 Social Features</h3>
+                <button class="modal-close" onclick="closeSocialModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="social-tabs">
+                    <button class="social-tab active" data-tab="friends">Friends</button>
+                    <button class="social-tab" data-tab="shared">Shared Content</button>
+                    <button class="social-tab" data-tab="connect">Connect</button>
+                </div>
+                
+                <div id="friendsTab" class="social-tab-content active">
+                    <h4>Your Friends</h4>
+                    <div id="friendsList">
+                        <!-- Friends list will be populated by JavaScript -->
+                    </div>
+                    <div class="add-friend-section">
+                        <h5>Add New Friend</h5>
+                        <input type="text" id="friendId" placeholder="Enter friend's ID">
+                        <button class="btn btn-primary" onclick="addFriend()">Add Friend</button>
+                    </div>
+                </div>
+                
+                <div id="sharedTab" class="social-tab-content">
+                    <h4>Shared Content</h4>
+                    <div id="sharedContentList">
+                        <!-- Shared content will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div id="connectTab" class="social-tab-content">
+                    <h4>Connect with Others</h4>
+                    <p>Share your stories and artwork with the community!</p>
+                    <div class="share-options">
+                        <button class="btn btn-primary" onclick="shareCurrentStory()">
+                            <i class="fas fa-share"></i> Share Current Story
+                        </button>
+                        <button class="btn btn-primary" onclick="shareCurrentArtwork()">
+                            <i class="fas fa-share"></i> Share Current Artwork
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Audio Modal -->
+    <div id="audioModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🎤 Advanced Audio Features</h3>
+                <button class="modal-close" onclick="closeAudioModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="audio-section">
+                    <h4>Voice Recording</h4>
+                    <p>Record your own voice narrating stories!</p>
+                    <div class="audio-recording-controls">
+                        <button id="recordButton" class="record-button" onclick="toggleRecording()">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button id="stopButton" class="btn btn-secondary" onclick="stopRecording()" style="display: none;">
+                            <i class="fas fa-stop"></i> Stop Recording
+                        </button>
+                    </div>
+                    <div id="recordingStatus"></div>
+                </div>
+                
+                <div class="audio-section">
+                    <h4>Voice Selection</h4>
+                    <p>Choose from available voices for different languages:</p>
+                    <div id="voiceSelection">
+                        <!-- Voice options will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="audio-section">
+                    <h4>Audio Settings</h4>
+                    <div class="audio-settings">
+                        <label>
+                            Speech Rate:
+                            <input type="range" id="speechRate" min="0.5" max="2" step="0.1" value="0.8">
+                            <span id="rateValue">0.8</span>
+                        </label>
+                        <label>
+                            Pitch:
+                            <input type="range" id="speechPitch" min="0.5" max="2" step="0.1" value="1.1">
+                            <span id="pitchValue">1.1</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment System Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content payment-modal">
+            <div class="modal-header">
+                <h3>💳 Premium Access & Subscriptions</h3>
+                <button class="modal-close" onclick="closePaymentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="subscription-plans">
+                    <h4>Choose Your Plan</h4>
+                    <div class="plans-grid">
+                        <div class="plan-card" data-plan="basic">
+                            <div class="plan-header">
+                                <h5>Basic</h5>
+                                <div class="plan-price">
+                                    <span class="currency">₦</span>
+                                    <span class="amount">500</span>
+                                    <span class="period">/month</span>
+                                </div>
+                            </div>
+                            <ul class="plan-features">
+                                <li><i class="fas fa-check"></i> Access to 50+ stories</li>
+                                <li><i class="fas fa-check"></i> Basic games</li>
+                                <li><i class="fas fa-check"></i> Standard audio</li>
+                                <li><i class="fas fa-check"></i> Community access</li>
+                            </ul>
+                            <button class="btn btn-primary plan-select-btn" onclick="selectPlan('basic', 500, 'monthly')">
+                                Select Basic Plan
+                            </button>
+                        </div>
+                        
+                        <div class="plan-card featured" data-plan="premium">
+                            <div class="plan-badge">Most Popular</div>
+                            <div class="plan-header">
+                                <h5>Premium</h5>
+                                <div class="plan-price">
+                                    <span class="currency">₦</span>
+                                    <span class="amount">1,200</span>
+                                    <span class="period">/month</span>
+                                </div>
+                            </div>
+                            <ul class="plan-features">
+                                <li><i class="fas fa-check"></i> Access to 200+ stories</li>
+                                <li><i class="fas fa-check"></i> All games & activities</li>
+                                <li><i class="fas fa-check"></i> Advanced audio features</li>
+                                <li><i class="fas fa-check"></i> Priority support</li>
+                                <li><i class="fas fa-check"></i> Ad-free experience</li>
+                                <li><i class="fas fa-check"></i> Download stories offline</li>
+                            </ul>
+                            <button class="btn btn-primary plan-select-btn" onclick="selectPlan('premium', 1200, 'monthly')">
+                                Select Premium Plan
+                            </button>
+                        </div>
+                        
+                        <div class="plan-card" data-plan="family">
+                            <div class="plan-header">
+                                <h5>Family</h5>
+                                <div class="plan-price">
+                                    <span class="currency">₦</span>
+                                    <span class="amount">2,500</span>
+                                    <span class="period">/month</span>
+                                </div>
+                            </div>
+                            <ul class="plan-features">
+                                <li><i class="fas fa-check"></i> Up to 5 child accounts</li>
+                                <li><i class="fas fa-check"></i> All Premium features</li>
+                                <li><i class="fas fa-check"></i> Parent dashboard</li>
+                                <li><i class="fas fa-check"></i> Progress tracking</li>
+                                <li><i class="fas fa-check"></i> Custom content creation</li>
+                                <li><i class="fas fa-check"></i> 24/7 support</li>
+                            </ul>
+                            <button class="btn btn-primary plan-select-btn" onclick="selectPlan('family', 2500, 'monthly')">
+                                Select Family Plan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-section" id="paymentSection" style="display: none;">
+                    <h4>Payment Details</h4>
+                    <div class="selected-plan-info">
+                        <h5>Selected Plan: <span id="selectedPlanName"></span></h5>
+                        <p>Amount: <span id="selectedPlanAmount"></span></p>
+                    </div>
+                    
+                    <form id="paymentForm" class="payment-form">
+                        <div class="form-group">
+                            <label for="cardName">Cardholder Name</label>
+                            <input type="text" id="cardName" required placeholder="Enter cardholder name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cardNumber">Card Number</label>
+                            <div class="card-input-wrapper">
+                                <input type="text" id="cardNumber" required placeholder="1234 5678 9012 3456" maxlength="19">
+                                <div class="card-icons">
+                                    <i class="fab fa-cc-visa"></i>
+                                    <i class="fab fa-cc-mastercard"></i>
+                                    <i class="fab fa-cc-amex"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiryDate">Expiry Date</label>
+                                <input type="text" id="expiryDate" required placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <input type="text" id="cvv" required placeholder="123" maxlength="4">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="paymentEmail" required placeholder="Enter your email">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="paymentPhone" required placeholder="+234 801 234 5678">
+                        </div>
+                        
+                        <div class="payment-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="saveCard" checked>
+                                <span class="checkmark"></span>
+                                Save card for future payments
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="autoRenew" checked>
+                                <span class="checkmark"></span>
+                                Auto-renew subscription
+                            </label>
+                        </div>
+                        
+                        <div class="payment-actions">
+                            <button type="submit" class="btn btn-primary btn-large">
+                                <i class="fas fa-lock"></i> Pay Securely with Flutterwave
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="goBackToPlans()">
+                                <i class="fas fa-arrow-left"></i> Back to Plans
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="payment-success" id="paymentSuccess" style="display: none;">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h4>Payment Successful!</h4>
+                    <p>Welcome to <span id="successPlanName"></span>! Your subscription is now active.</p>
+                    <div class="success-features">
+                        <h5>You now have access to:</h5>
+                        <ul id="successFeaturesList">
+                            <!-- Features will be populated by JavaScript -->
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary" onclick="closePaymentModal()">
+                        Start Exploring Premium Features
+                    </button>
+                </div>
+                
+                <div class="payment-error" id="paymentError" style="display: none;">
+                    <div class="error-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <h4>Payment Failed</h4>
+                    <p id="errorMessage">Something went wrong with your payment. Please try again.</p>
+                    <div class="error-actions">
+                        <button class="btn btn-primary" onclick="retryPayment()">
+                            <i class="fas fa-redo"></i> Try Again
+                        </button>
+                        <button class="btn btn-secondary" onclick="goBackToPlans()">
+                            <i class="fas fa-arrow-left"></i> Back to Plans
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subscription Management Modal -->
+    <div id="subscriptionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📋 Subscription Management</h3>
+                <button class="modal-close" onclick="closeSubscriptionModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="current-subscription" id="currentSubscription">
+                    <h4>Current Subscription</h4>
+                    <div class="subscription-status">
+                        <div class="status-item">
+                            <span class="label">Plan:</span>
+                            <span class="value" id="currentPlanName">No active subscription</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="label">Status:</span>
+                            <span class="value" id="currentPlanStatus">Inactive</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="label">Next Billing:</span>
+                            <span class="value" id="nextBillingDate">-</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="label">Amount:</span>
+                            <span class="value" id="currentPlanAmount">₦0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="subscription-actions">
+                    <button class="btn btn-primary" onclick="openPaymentModal()">
+                        <i class="fas fa-plus"></i> Upgrade Plan
+                    </button>
+                    <button class="btn btn-secondary" onclick="manageBilling()">
+                        <i class="fas fa-credit-card"></i> Manage Billing
+                    </button>
+                    <button class="btn btn-danger" onclick="cancelSubscription()" id="cancelBtn" style="display: none;">
+                        <i class="fas fa-times"></i> Cancel Subscription
+                    </button>
+                </div>
+                
+                <div class="billing-history">
+                    <h4>Billing History</h4>
+                    <div class="billing-list" id="billingList">
+                        <!-- Billing history will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://checkout.flutterwave.com/v3.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
