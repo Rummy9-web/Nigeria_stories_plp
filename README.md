@@ -2,6 +2,8 @@
 
 A beautiful, multilingual interactive storytelling application designed specifically for children, featuring authentic Nigerian stories, games, and activities in multiple Nigerian languages with English translations.
 
+## Production: https://nigeria-stories-plp.vercel.app/
+
 ## 🌟 Features
 
 ### 📚 Enhanced Multilingual Story Library
