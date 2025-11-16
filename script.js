@@ -600,25 +600,39 @@ const coloringSystem = {
         lion: {
             name: 'Lion',
             regions: [
-                { x: 100, y: 100, width: 200, height: 150, defaultColor: '#F4A460', label: 'Body' },
-                { x: 150, y: 80, width: 100, height: 60, defaultColor: '#D2691E', label: 'Mane' },
-                { x: 180, y: 110, width: 40, height: 30, defaultColor: '#FFE4B5', label: 'Face' }
+                { x: 100, y: 100, width: 200, height: 150, defaultColor: '#FFFFFF', label: 'Body' },
+                { x: 150, y: 80, width: 100, height: 60, defaultColor: '#FFFFFF', label: 'Mane' },
+                { x: 180, y: 110, width: 40, height: 30, defaultColor: '#FFFFFF', label: 'Face' },
+                { x: 110, y: 230, width: 30, height: 40, defaultColor: '#FFFFFF', label: 'Leg 1' },
+                { x: 160, y: 230, width: 30, height: 40, defaultColor: '#FFFFFF', label: 'Leg 2' },
+                { x: 210, y: 230, width: 30, height: 40, defaultColor: '#FFFFFF', label: 'Leg 3' },
+                { x: 260, y: 230, width: 30, height: 40, defaultColor: '#FFFFFF', label: 'Leg 4' },
+                { x: 280, y: 150, width: 50, height: 15, defaultColor: '#FFFFFF', label: 'Tail' }
             ]
         },
         elephant: {
             name: 'Elephant',
             regions: [
-                { x: 80, y: 120, width: 240, height: 160, defaultColor: '#A9A9A9', label: 'Body' },
-                { x: 150, y: 90, width: 100, height: 80, defaultColor: '#808080', label: 'Head' },
-                { x: 160, y: 160, width: 80, height: 120, defaultColor: '#696969', label: 'Trunk' }
+                { x: 120, y: 140, width: 200, height: 120, defaultColor: '#FFFFFF', label: 'Body' },
+                { x: 150, y: 100, width: 120, height: 80, defaultColor: '#FFFFFF', label: 'Head' },
+                { x: 180, y: 160, width: 60, height: 140, defaultColor: '#FFFFFF', label: 'Trunk' },
+                { x: 130, y: 250, width: 30, height: 60, defaultColor: '#FFFFFF', label: 'Leg 1' },
+                { x: 180, y: 250, width: 30, height: 60, defaultColor: '#FFFFFF', label: 'Leg 2' },
+                { x: 230, y: 250, width: 30, height: 60, defaultColor: '#FFFFFF', label: 'Leg 3' },
+                { x: 280, y: 250, width: 30, height: 60, defaultColor: '#FFFFFF', label: 'Leg 4' },
+                { x: 140, y: 90, width: 25, height: 30, defaultColor: '#FFFFFF', label: 'Ear Left' },
+                { x: 260, y: 90, width: 25, height: 30, defaultColor: '#FFFFFF', label: 'Ear Right' }
             ]
         },
         tree: {
             name: 'Tree',
             regions: [
-                { x: 180, y: 50, width: 40, height: 120, defaultColor: '#8B4513', label: 'Trunk' },
-                { x: 120, y: 30, width: 160, height: 100, defaultColor: '#228B22', label: 'Leaves Top' },
-                { x: 140, y: 100, width: 120, height: 80, defaultColor: '#32CD32', label: 'Leaves Middle' }
+                { x: 180, y: 200, width: 40, height: 140, defaultColor: '#FFFFFF', label: 'Trunk' },
+                { x: 100, y: 80, width: 200, height: 80, defaultColor: '#FFFFFF', label: 'Leaves Top' },
+                { x: 120, y: 140, width: 160, height: 70, defaultColor: '#FFFFFF', label: 'Leaves Middle' },
+                { x: 140, y: 190, width: 120, height: 50, defaultColor: '#FFFFFF', label: 'Leaves Bottom' },
+                { x: 165, y: 340, width: 35, height: 15, defaultColor: '#FFFFFF', label: 'Root Left' },
+                { x: 200, y: 340, width: 35, height: 15, defaultColor: '#FFFFFF', label: 'Root Right' }
             ]
         }
     },
@@ -1725,6 +1739,7 @@ function createCommunityStoryCard(story) {
     const card = document.createElement('div');
     card.className = 'story-card';
     card.setAttribute('data-item-id', story.id);
+    card.style.cursor = 'pointer';
     
     const isLiked = likeSystem.isLiked(story.id);
     
@@ -1738,12 +1753,30 @@ function createCommunityStoryCard(story) {
             <p class="story-description">By ${story.author}</p>
             <div class="story-meta">
                 <span>${story.date}</span>
-                <button class="like-button" onclick="likeSystem.toggleLike('${story.id}')" style="background: none; border: none; cursor: pointer; padding: 5px 10px;">
+                <button class="like-button" style="background: none; border: none; cursor: pointer; padding: 5px 10px;">
                     <i class="${isLiked ? 'fas' : 'far'} fa-heart" style="color: ${isLiked ? '#FF0000' : '#666'}"></i> Like
                 </button>
             </div>
         </div>
     `;
+    
+    // Add click event to the card itself
+    card.addEventListener('click', function(e) {
+        // Don't open if clicking the like button
+        if (e.target.closest('.like-button')) {
+            return;
+        }
+        openCommunityStory(story.id);
+    });
+    
+    // Add click event to the like button
+    const likeButton = card.querySelector('.like-button');
+    if (likeButton) {
+        likeButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            likeSystem.toggleLike(story.id);
+        });
+    }
 
     return card;
 }
@@ -1790,16 +1823,16 @@ function createArtworkCard(artwork) {
     const isLiked = likeSystem.isLiked(artwork.id);
     
     card.innerHTML = `
-        <div class="story-image">
+        <div class="story-image" onclick="viewArtwork('${artwork.id}')" style="cursor: pointer;">
             ${artwork.dataURL ? `<img src="${artwork.dataURL}" alt="${artwork.title}" style="width: 100%; height: 100%; object-fit: cover;">` : '<i class="fas fa-palette"></i>'}
         </div>
         <div class="story-content">
-            <h3 class="story-title">${artwork.title}</h3>
+            <h3 class="story-title" onclick="viewArtwork('${artwork.id}')" style="cursor: pointer;">${artwork.title}</h3>
             <span class="story-language">${artwork.type}</span>
             <p class="story-description">By ${artwork.artist}</p>
             <div class="story-meta">
                 <span>${artwork.date}</span>
-                <button class="like-button" onclick="likeSystem.toggleLike('${artwork.id}')" style="background: none; border: none; cursor: pointer; padding: 5px 10px;">
+                <button class="like-button" onclick="event.stopPropagation(); likeSystem.toggleLike('${artwork.id}')" style="background: none; border: none; cursor: pointer; padding: 5px 10px;">
                     <i class="${isLiked ? 'fas' : 'far'} fa-heart" style="color: ${isLiked ? '#FF0000' : '#666'}"></i> Like
                 </button>
             </div>
@@ -1807,6 +1840,142 @@ function createArtworkCard(artwork) {
     `;
 
     return card;
+}
+
+// ============================================
+// COMMUNITY STORY AND ARTWORK VIEWING
+// ============================================
+function openCommunityStory(storyId) {
+    // Find story in user stories
+    let story = appState.userStories.find(s => s.id == storyId);
+    
+    // If not found, create a sample story object
+    if (!story) {
+        const sampleStories = {
+            'sample1': {
+                id: 'sample1',
+                title: 'The Friendly Elephant',
+                author: 'Aisha',
+                language: 'English',
+                category: 'adventure',
+                description: 'A heartwarming tale of a friendly elephant who helps the village.',
+                content: [
+                    "In a village near the great forest, there lived a friendly elephant named Tembo.",
+                    "Tembo was loved by all the children because he would give them rides on his back.",
+                    "One day, the village well dried up and everyone was worried about water.",
+                    "Tembo remembered a hidden spring deep in the forest that his mother had shown him.",
+                    "He led the villagers through the dense forest to the secret spring.",
+                    "The villagers were so grateful that they built a special shelter for Tembo.",
+                    "From that day on, Tembo became the village's guardian and best friend.",
+                    "The children learned that true friendship means helping others in need."
+                ],
+                ageGroup: "5-8",
+                readingTime: "5 min"
+            },
+            'sample2': {
+                id: 'sample2',
+                title: 'The Wise Old Tree',
+                author: 'Kemi',
+                language: 'English',
+                category: 'folktale',
+                description: 'An ancient tree shares wisdom with the forest animals.',
+                content: [
+                    "At the edge of the village stood an ancient baobab tree, older than anyone could remember.",
+                    "The animals of the forest would come to the tree seeking wisdom and advice.",
+                    "One day, a young monkey named Koko came crying to the tree.",
+                    "Koko had lost his favorite toy and couldn't find it anywhere.",
+                    "The wise tree rustled its leaves and spoke in a gentle voice.",
+                    "It told Koko to retrace his steps and look carefully where he had been playing.",
+                    "Koko followed the advice and found his toy hidden under some fallen leaves.",
+                    "He learned that patience and careful thinking can solve many problems."
+                ],
+                ageGroup: "6-9",
+                readingTime: "6 min"
+            }
+        };
+        
+        story = sampleStories[storyId];
+    }
+    
+    if (story) {
+        // Convert community story format to story modal format
+        const storyForModal = {
+            id: story.id,
+            title: story.title,
+            category: story.category || 'folktale',
+            language: story.language || 'en',
+            description: story.description || `A story by ${story.author}`,
+            content: Array.isArray(story.content) ? story.content : [story.content],
+            ageGroup: story.ageGroup || "5-10",
+            readingTime: story.readingTime || "5 min"
+        };
+        
+        openStory(storyForModal);
+    }
+}
+
+function viewArtwork(artworkId) {
+    // Find artwork
+    let artwork = appState.userArtworks.find(a => a.id == artworkId);
+    
+    // If not found, check sample artworks
+    if (!artwork) {
+        const sampleArtworks = {
+            'art1': {
+                id: 'art1',
+                title: 'Beautiful Sunset',
+                artist: 'Zara',
+                type: 'Drawing',
+                date: '2024-01-20',
+                description: 'A colorful sunset over the Nigerian landscape'
+            },
+            'art2': {
+                id: 'art2',
+                title: 'Forest Animals',
+                artist: 'Bello',
+                type: 'Coloring',
+                date: '2024-01-18',
+                description: 'Colorful animals from Nigerian forests'
+            }
+        };
+        
+        artwork = sampleArtworks[artworkId];
+    }
+    
+    if (artwork) {
+        // Open artwork in modal
+        const modal = document.getElementById('gameModal');
+        const title = document.getElementById('gameTitle');
+        const container = document.getElementById('gameContainer');
+        
+        title.textContent = artwork.title;
+        
+        container.innerHTML = `
+            <div class="artwork-viewer">
+                <div class="artwork-display">
+                    ${artwork.dataURL ? 
+                        `<img src="${artwork.dataURL}" alt="${artwork.title}" style="max-width: 100%; max-height: 500px; border-radius: 10px;">` 
+                        : 
+                        '<div style="width: 400px; height: 400px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 10px;"><i class="fas fa-palette" style="font-size: 100px; color: #ccc;"></i></div>'
+                    }
+                </div>
+                <div class="artwork-info" style="margin-top: 20px; text-align: center;">
+                    <h3>${artwork.title}</h3>
+                    <p><strong>Artist:</strong> ${artwork.artist}</p>
+                    <p><strong>Type:</strong> ${artwork.type}</p>
+                    <p><strong>Date:</strong> ${artwork.date}</p>
+                    ${artwork.description ? `<p>${artwork.description}</p>` : ''}
+                </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn btn-secondary" onclick="closeGameModal()">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        modal.classList.add('active');
+    }
 }
 
 // ============================================
