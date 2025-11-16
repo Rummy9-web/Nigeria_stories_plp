@@ -593,46 +593,157 @@ const coloringSystem = {
     canvas: null,
     ctx: null,
     currentImage: null,
-    currentColor: '#FF0000',
+    currentColor: '#FF6B6B',
     isColoring: false,
+    showingExample: false,
     
     templates: {
         lion: {
             name: 'Lion',
+            svgPath: `
+                <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Mane -->
+                    <circle cx="200" cy="180" r="90" fill="REGION_0" stroke="#000" stroke-width="2"/>
+                    <circle cx="160" cy="140" r="25" fill="REGION_0" stroke="#000" stroke-width="2"/>
+                    <circle cx="240" cy="140" r="25" fill="REGION_0" stroke="#000" stroke-width="2"/>
+                    <circle cx="140" cy="180" r="25" fill="REGION_0" stroke="#000" stroke-width="2"/>
+                    <circle cx="260" cy="180" r="25" fill="REGION_0" stroke="#000" stroke-width="2"/>
+                    <circle cx="150" cy="220" r="25" fill="REGION_0" stroke="#000" stroke-width="2"/>
+                    <circle cx="250" cy="220" r="25" fill="REGION_0" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Face -->
+                    <circle cx="200" cy="180" r="60" fill="REGION_1" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Eyes -->
+                    <circle cx="185" cy="170" r="8" fill="#000"/>
+                    <circle cx="215" cy="170" r="8" fill="#000"/>
+                    <circle cx="187" cy="168" r="3" fill="#fff"/>
+                    <circle cx="217" cy="168" r="3" fill="#fff"/>
+                    
+                    <!-- Nose -->
+                    <path d="M 200 185 L 195 195 L 205 195 Z" fill="#000"/>
+                    
+                    <!-- Mouth -->
+                    <path d="M 200 195 Q 190 200 180 195" stroke="#000" stroke-width="2" fill="none"/>
+                    <path d="M 200 195 Q 210 200 220 195" stroke="#000" stroke-width="2" fill="none"/>
+                    
+                    <!-- Body -->
+                    <ellipse cx="200" cy="290" rx="70" ry="80" fill="REGION_2" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Front Legs -->
+                    <rect x="170" y="340" width="25" height="50" rx="5" fill="REGION_3" stroke="#000" stroke-width="2"/>
+                    <rect x="205" y="340" width="25" height="50" rx="5" fill="REGION_4" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Back Legs -->
+                    <ellipse cx="160" cy="350" rx="20" ry="35" fill="REGION_5" stroke="#000" stroke-width="2"/>
+                    <ellipse cx="240" cy="350" rx="20" ry="35" fill="REGION_6" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Tail -->
+                    <path d="M 260 310 Q 300 320 310 280" stroke="REGION_7" stroke-width="8" fill="none" stroke-linecap="round"/>
+                    <circle cx="310" cy="280" r="12" fill="REGION_0" stroke="#000" stroke-width="2"/>
+                </svg>
+            `,
             regions: [
-                { x: 100, y: 100, width: 200, height: 150, defaultColor: '#FFFFFF', label: 'Body' },
-                { x: 150, y: 80, width: 100, height: 60, defaultColor: '#FFFFFF', label: 'Mane' },
-                { x: 180, y: 110, width: 40, height: 30, defaultColor: '#FFFFFF', label: 'Face' },
-                { x: 110, y: 230, width: 30, height: 40, defaultColor: '#FFFFFF', label: 'Leg 1' },
-                { x: 160, y: 230, width: 30, height: 40, defaultColor: '#FFFFFF', label: 'Leg 2' },
-                { x: 210, y: 230, width: 30, height: 40, defaultColor: '#FFFFFF', label: 'Leg 3' },
-                { x: 260, y: 230, width: 30, height: 40, defaultColor: '#FFFFFF', label: 'Leg 4' },
-                { x: 280, y: 150, width: 50, height: 15, defaultColor: '#FFFFFF', label: 'Tail' }
+                { id: 0, name: 'Mane', exampleColor: '#CD853F' },
+                { id: 1, name: 'Face', exampleColor: '#F4A460' },
+                { id: 2, name: 'Body', exampleColor: '#DAA520' },
+                { id: 3, name: 'Front Left Leg', exampleColor: '#DAA520' },
+                { id: 4, name: 'Front Right Leg', exampleColor: '#DAA520' },
+                { id: 5, name: 'Back Left Leg', exampleColor: '#CD853F' },
+                { id: 6, name: 'Back Right Leg', exampleColor: '#CD853F' },
+                { id: 7, name: 'Tail', exampleColor: '#CD853F' }
             ]
         },
         elephant: {
             name: 'Elephant',
+            svgPath: `
+                <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Body -->
+                    <ellipse cx="220" cy="250" rx="100" ry="80" fill="REGION_0" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Head -->
+                    <circle cx="180" cy="180" r="65" fill="REGION_1" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Ears -->
+                    <ellipse cx="140" cy="160" rx="35" ry="55" fill="REGION_2" stroke="#000" stroke-width="2"/>
+                    <ellipse cx="220" cy="160" rx="35" ry="55" fill="REGION_3" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Trunk -->
+                    <path d="M 180 210 Q 170 250 160 290 Q 155 310 165 320" 
+                          stroke="REGION_4" stroke-width="25" fill="none" stroke-linecap="round"/>
+                    
+                    <!-- Trunk end -->
+                    <circle cx="165" cy="320" r="12" fill="REGION_4" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Eyes -->
+                    <circle cx="170" cy="170" r="6" fill="#000"/>
+                    <circle cx="172" cy="168" r="2" fill="#fff"/>
+                    
+                    <!-- Tusks -->
+                    <path d="M 160 200 Q 140 210 135 225" stroke="#FFFFF0" stroke-width="6" fill="none" stroke-linecap="round"/>
+                    <path d="M 175 205 Q 155 215 150 230" stroke="#FFFFF0" stroke-width="6" fill="none" stroke-linecap="round"/>
+                    
+                    <!-- Legs -->
+                    <rect x="170" y="310" width="30" height="70" rx="8" fill="REGION_5" stroke="#000" stroke-width="2"/>
+                    <rect x="210" y="310" width="30" height="70" rx="8" fill="REGION_6" stroke="#000" stroke-width="2"/>
+                    <rect x="250" y="310" width="30" height="70" rx="8" fill="REGION_7" stroke="#000" stroke-width="2"/>
+                    <rect x="290" y="310" width="30" height="70" rx="8" fill="REGION_8" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Tail -->
+                    <path d="M 310 250 Q 340 260 350 240" stroke="#708090" stroke-width="4" fill="none"/>
+                </svg>
+            `,
             regions: [
-                { x: 120, y: 140, width: 200, height: 120, defaultColor: '#FFFFFF', label: 'Body' },
-                { x: 150, y: 100, width: 120, height: 80, defaultColor: '#FFFFFF', label: 'Head' },
-                { x: 180, y: 160, width: 60, height: 140, defaultColor: '#FFFFFF', label: 'Trunk' },
-                { x: 130, y: 250, width: 30, height: 60, defaultColor: '#FFFFFF', label: 'Leg 1' },
-                { x: 180, y: 250, width: 30, height: 60, defaultColor: '#FFFFFF', label: 'Leg 2' },
-                { x: 230, y: 250, width: 30, height: 60, defaultColor: '#FFFFFF', label: 'Leg 3' },
-                { x: 280, y: 250, width: 30, height: 60, defaultColor: '#FFFFFF', label: 'Leg 4' },
-                { x: 140, y: 90, width: 25, height: 30, defaultColor: '#FFFFFF', label: 'Ear Left' },
-                { x: 260, y: 90, width: 25, height: 30, defaultColor: '#FFFFFF', label: 'Ear Right' }
+                { id: 0, name: 'Body', exampleColor: '#808080' },
+                { id: 1, name: 'Head', exampleColor: '#808080' },
+                { id: 2, name: 'Left Ear', exampleColor: '#696969' },
+                { id: 3, name: 'Right Ear', exampleColor: '#696969' },
+                { id: 4, name: 'Trunk', exampleColor: '#808080' },
+                { id: 5, name: 'Leg 1', exampleColor: '#696969' },
+                { id: 6, name: 'Leg 2', exampleColor: '#696969' },
+                { id: 7, name: 'Leg 3', exampleColor: '#696969' },
+                { id: 8, name: 'Leg 4', exampleColor: '#696969' }
             ]
         },
         tree: {
             name: 'Tree',
+            svgPath: `
+                <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Trunk -->
+                    <rect x="170" y="200" width="60" height="180" rx="5" fill="REGION_0" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Tree rings on trunk -->
+                    <ellipse cx="200" cy="250" rx="25" ry="15" fill="none" stroke="#654321" stroke-width="1" opacity="0.5"/>
+                    <ellipse cx="200" cy="300" rx="28" ry="18" fill="none" stroke="#654321" stroke-width="1" opacity="0.5"/>
+                    
+                    <!-- Bottom leaves -->
+                    <ellipse cx="200" cy="200" rx="100" ry="60" fill="REGION_1" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Middle leaves -->
+                    <ellipse cx="200" cy="150" rx="90" ry="55" fill="REGION_2" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Top leaves -->
+                    <ellipse cx="200" cy="100" rx="75" ry="50" fill="REGION_3" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Top of tree -->
+                    <circle cx="200" cy="70" r="35" fill="REGION_4" stroke="#000" stroke-width="2"/>
+                    
+                    <!-- Roots -->
+                    <path d="M 170 380 Q 140 390 120 385" stroke="REGION_5" stroke-width="8" fill="none" stroke-linecap="round"/>
+                    <path d="M 230 380 Q 260 390 280 385" stroke="REGION_6" stroke-width="8" fill="none" stroke-linecap="round"/>
+                    
+                    <!-- Ground -->
+                    <rect x="0" y="380" width="400" height="20" fill="#8B7355" opacity="0.3"/>
+                </svg>
+            `,
             regions: [
-                { x: 180, y: 200, width: 40, height: 140, defaultColor: '#FFFFFF', label: 'Trunk' },
-                { x: 100, y: 80, width: 200, height: 80, defaultColor: '#FFFFFF', label: 'Leaves Top' },
-                { x: 120, y: 140, width: 160, height: 70, defaultColor: '#FFFFFF', label: 'Leaves Middle' },
-                { x: 140, y: 190, width: 120, height: 50, defaultColor: '#FFFFFF', label: 'Leaves Bottom' },
-                { x: 165, y: 340, width: 35, height: 15, defaultColor: '#FFFFFF', label: 'Root Left' },
-                { x: 200, y: 340, width: 35, height: 15, defaultColor: '#FFFFFF', label: 'Root Right' }
+                { id: 0, name: 'Trunk', exampleColor: '#8B4513' },
+                { id: 1, name: 'Bottom Leaves', exampleColor: '#228B22' },
+                { id: 2, name: 'Middle Leaves', exampleColor: '#32CD32' },
+                { id: 3, name: 'Top Leaves', exampleColor: '#90EE90' },
+                { id: 4, name: 'Tree Top', exampleColor: '#98FB98' },
+                { id: 5, name: 'Left Root', exampleColor: '#654321' },
+                { id: 6, name: 'Right Root', exampleColor: '#654321' }
             ]
         }
     },
@@ -658,41 +769,47 @@ const coloringSystem = {
                     <h4>Select Color:</h4>
                     <div class="color-palette">
                         <div class="color-swatch" style="background: #FF0000" onclick="coloringSystem.selectColor('#FF0000')" title="Red"></div>
+                        <div class="color-swatch" style="background: #FFA500" onclick="coloringSystem.selectColor('#FFA500')" title="Orange"></div>
+                        <div class="color-swatch" style="background: #FFFF00" onclick="coloringSystem.selectColor('#FFFF00')" title="Yellow"></div>
                         <div class="color-swatch" style="background: #00FF00" onclick="coloringSystem.selectColor('#00FF00')" title="Green"></div>
                         <div class="color-swatch" style="background: #0000FF" onclick="coloringSystem.selectColor('#0000FF')" title="Blue"></div>
-                        <div class="color-swatch" style="background: #FFFF00" onclick="coloringSystem.selectColor('#FFFF00')" title="Yellow"></div>
-                        <div class="color-swatch" style="background: #FF00FF" onclick="coloringSystem.selectColor('#FF00FF')" title="Magenta"></div>
-                        <div class="color-swatch" style="background: #00FFFF" onclick="coloringSystem.selectColor('#00FFFF')" title="Cyan"></div>
-                        <div class="color-swatch" style="background: #FFA500" onclick="coloringSystem.selectColor('#FFA500')" title="Orange"></div>
                         <div class="color-swatch" style="background: #800080" onclick="coloringSystem.selectColor('#800080')" title="Purple"></div>
                         <div class="color-swatch" style="background: #FFC0CB" onclick="coloringSystem.selectColor('#FFC0CB')" title="Pink"></div>
-                        <div class="color-swatch" style="background: #A52A2A" onclick="coloringSystem.selectColor('#A52A2A')" title="Brown"></div>
+                        <div class="color-swatch" style="background: #8B4513" onclick="coloringSystem.selectColor('#8B4513')" title="Brown"></div>
                         <div class="color-swatch" style="background: #808080" onclick="coloringSystem.selectColor('#808080')" title="Gray"></div>
                         <div class="color-swatch" style="background: #000000" onclick="coloringSystem.selectColor('#000000')" title="Black"></div>
+                        <div class="color-swatch" style="background: #FFFFFF; border: 2px solid #ccc;" onclick="coloringSystem.selectColor('#FFFFFF')" title="White"></div>
+                        <div class="color-swatch" style="background: #A52A2A" onclick="coloringSystem.selectColor('#A52A2A')" title="Dark Brown"></div>
                     </div>
                     <div class="custom-color-picker">
                         <label>Custom Color:</label>
-                        <input type="color" id="customColorPicker" value="#FF0000" onchange="coloringSystem.selectColor(this.value)">
+                        <input type="color" id="customColorPicker" value="#FF6B6B" onchange="coloringSystem.selectColor(this.value)">
                     </div>
                     <div class="current-color-display">
                         <span>Current Color:</span>
-                        <div class="current-color-box" id="currentColorBox" style="background: #FF0000"></div>
+                        <div class="current-color-box" id="currentColorBox" style="background: #FF6B6B; border: 2px solid #333;"></div>
                     </div>
                 </div>
                 <div class="coloring-canvas-wrapper">
-                    <canvas id="coloringGameCanvas" width="400" height="400"></canvas>
+                    <div id="coloringDisplay" style="width: 100%; max-width: 500px; margin: 0 auto;">
+                        <!-- SVG will be inserted here -->
+                    </div>
                     <div class="coloring-instructions">
-                        <p>Click on different parts of the picture to color them!</p>
+                        <p><strong>Click on different parts to color them!</strong></p>
+                        <p style="font-size: 0.9em; color: #666;">Each part can be colored separately. Choose your colors and make it beautiful!</p>
                     </div>
                 </div>
                 <div class="coloring-actions">
-                    <button class="btn btn-secondary" onclick="coloringSystem.reset()">
+                    <button class="btn btn-secondary" onclick="coloringSystem.reset()" style="background: #dc3545; color: white;">
                         <i class="fas fa-undo"></i> Reset
+                    </button>
+                    <button class="btn btn-info" onclick="coloringSystem.toggleExample()" style="background: #17a2b8; color: white;">
+                        <i class="fas fa-eye"></i> <span id="exampleBtnText">Show Example</span>
                     </button>
                     <button class="btn btn-primary" onclick="coloringSystem.save()">
                         <i class="fas fa-save"></i> Save Artwork
                     </button>
-                    <button class="btn btn-secondary" onclick="closeGameModal()">
+                    <button class="btn btn-secondary" onclick="closeGameModal()" style="background: #6c757d; color: white;">
                         <i class="fas fa-times"></i> Close
                     </button>
                 </div>
@@ -702,11 +819,68 @@ const coloringSystem = {
         modal.classList.add('active');
         
         setTimeout(() => {
-            this.canvas = document.getElementById('coloringGameCanvas');
-            this.ctx = this.canvas.getContext('2d');
-            this.drawTemplate();
-            this.setupCanvasEvents();
+            this.renderSVG();
         }, 100);
+    },
+    
+    renderSVG() {
+        const display = document.getElementById('coloringDisplay');
+        if (!display) return;
+        
+        const template = this.templates[this.currentImage];
+        let svg = template.svgPath;
+        
+        // Replace region placeholders with current colors or white
+        template.regions.forEach(region => {
+            const color = this.showingExample ? region.exampleColor : (this.coloredRegions[region.id] || '#FFFFFF');
+            svg = svg.replace(`REGION_${region.id}`, color);
+        });
+        
+        display.innerHTML = svg;
+        
+        // Add click handlers to SVG elements
+        const svgElement = display.querySelector('svg');
+        if (svgElement) {
+            svgElement.style.cursor = 'pointer';
+            svgElement.style.maxWidth = '100%';
+            svgElement.style.height = 'auto';
+            
+            // Add click event to the SVG
+            svgElement.addEventListener('click', (e) => {
+                if (this.showingExample) {
+                    showNotification('Exit example mode to color!', 'info');
+                    return;
+                }
+                
+                // Find which region was clicked
+                const target = e.target;
+                const fillColor = target.getAttribute('fill');
+                
+                // Check if this element belongs to a region
+                template.regions.forEach(region => {
+                    const currentColor = this.coloredRegions[region.id] || '#FFFFFF';
+                    if (fillColor === currentColor || target.getAttribute('stroke') === currentColor) {
+                        this.coloredRegions[region.id] = this.currentColor;
+                        this.renderSVG();
+                        showNotification(`Colored ${region.name}!`, 'success');
+                    }
+                });
+            });
+        }
+    },
+    
+    toggleExample() {
+        this.showingExample = !this.showingExample;
+        const btnText = document.getElementById('exampleBtnText');
+        
+        if (this.showingExample) {
+            btnText.textContent = 'Hide Example';
+            showNotification('This is how it should look! Click "Hide Example" to continue coloring.', 'info');
+        } else {
+            btnText.textContent = 'Show Example';
+        }
+        
+        this.renderSVG();
     },
     
     selectColor(color) {
@@ -721,51 +895,14 @@ const coloringSystem = {
         }
     },
     
-    drawTemplate() {
-        if (!this.ctx) return;
-        
-        this.ctx.fillStyle = '#FFFFFF';
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        
-        const template = this.templates[this.currentImage];
-        template.regions.forEach((region, index) => {
-            const color = this.coloredRegions[index] || region.defaultColor;
-            
-            this.ctx.fillStyle = color;
-            this.ctx.fillRect(region.x, region.y, region.width, region.height);
-            
-            this.ctx.strokeStyle = '#000000';
-            this.ctx.lineWidth = 2;
-            this.ctx.strokeRect(region.x, region.y, region.width, region.height);
-            
-            this.ctx.fillStyle = '#000000';
-            this.ctx.font = '12px Arial';
-            this.ctx.textAlign = 'center';
-            this.ctx.fillText(region.label, region.x + region.width / 2, region.y + region.height / 2);
-        });
-    },
-    
-    setupCanvasEvents() {
-        this.canvas.addEventListener('click', (e) => {
-            const rect = this.canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const template = this.templates[this.currentImage];
-            template.regions.forEach((region, index) => {
-                if (x >= region.x && x <= region.x + region.width &&
-                    y >= region.y && y <= region.y + region.height) {
-                    this.coloredRegions[index] = this.currentColor;
-                    this.drawTemplate();
-                }
-            });
-        });
-    },
-    
     reset() {
-        if (confirm('Are you sure you want to reset your coloring?')) {
+        if (confirm('Are you sure you want to reset your coloring? This will erase all your colors.')) {
             this.coloredRegions = {};
-            this.drawTemplate();
+            this.showingExample = false;
+            const btnText = document.getElementById('exampleBtnText');
+            if (btnText) btnText.textContent = 'Show Example';
+            this.renderSVG();
+            showNotification('Canvas reset! Start coloring again.', 'info');
         }
     },
     
@@ -774,25 +911,52 @@ const coloringSystem = {
         updateProgressDisplay();
         saveUserProgress();
         
-        const dataURL = this.canvas.toDataURL('image/png');
+        // Get the SVG element
+        const svgElement = document.querySelector('#coloringDisplay svg');
+        if (!svgElement) return;
         
-        const link = document.createElement('a');
-        link.download = `${this.currentImage}_colored_${Date.now()}.png`;
-        link.href = dataURL;
-        link.click();
+        // Convert SVG to data URL
+        const svgData = new XMLSerializer().serializeToString(svgElement);
+        const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
         
-        showNotification('Artwork saved successfully!', 'success');
+        // Create canvas to convert to PNG
+        const canvas = document.createElement('canvas');
+        canvas.width = 500;
+        canvas.height = 500;
+        const ctx = canvas.getContext('2d');
         
-        appState.userArtworks.push({
-            id: Date.now(),
-            title: `Colored ${this.templates[this.currentImage].name}`,
-            artist: 'You',
-            type: 'Coloring',
-            date: new Date().toLocaleDateString(),
-            dataURL: dataURL
-        });
+        const img = new Image();
+        img.onload = () => {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            
+            const dataURL = canvas.toDataURL('image/png');
+            
+            // Download
+            const link = document.createElement('a');
+            link.download = `${this.currentImage}_colored_${Date.now()}.png`;
+            link.href = dataURL;
+            link.click();
+            
+            showNotification('Artwork saved successfully!', 'success');
+            
+            // Save to user artworks
+            appState.userArtworks.push({
+                id: Date.now(),
+                title: `Colored ${this.templates[this.currentImage].name}`,
+                artist: 'You',
+                type: 'Coloring',
+                date: new Date().toLocaleDateString(),
+                dataURL: dataURL
+            });
+            
+            populateArtworkGallery();
+            URL.revokeObjectURL(url);
+        };
         
-        populateArtworkGallery();
+        img.src = url;
     }
 };
 
@@ -1819,25 +1983,44 @@ function createArtworkCard(artwork) {
     const card = document.createElement('div');
     card.className = 'story-card';
     card.setAttribute('data-item-id', artwork.id);
+    card.style.cursor = 'pointer';
     
     const isLiked = likeSystem.isLiked(artwork.id);
     
     card.innerHTML = `
-        <div class="story-image" onclick="viewArtwork('${artwork.id}')" style="cursor: pointer;">
+        <div class="story-image">
             ${artwork.dataURL ? `<img src="${artwork.dataURL}" alt="${artwork.title}" style="width: 100%; height: 100%; object-fit: cover;">` : '<i class="fas fa-palette"></i>'}
         </div>
         <div class="story-content">
-            <h3 class="story-title" onclick="viewArtwork('${artwork.id}')" style="cursor: pointer;">${artwork.title}</h3>
+            <h3 class="story-title">${artwork.title}</h3>
             <span class="story-language">${artwork.type}</span>
             <p class="story-description">By ${artwork.artist}</p>
             <div class="story-meta">
                 <span>${artwork.date}</span>
-                <button class="like-button" onclick="event.stopPropagation(); likeSystem.toggleLike('${artwork.id}')" style="background: none; border: none; cursor: pointer; padding: 5px 10px;">
+                <button class="like-button" style="background: none; border: none; cursor: pointer; padding: 5px 10px;">
                     <i class="${isLiked ? 'fas' : 'far'} fa-heart" style="color: ${isLiked ? '#FF0000' : '#666'}"></i> Like
                 </button>
             </div>
         </div>
     `;
+    
+    // Add click event to the card itself
+    card.addEventListener('click', function(e) {
+        // Don't open if clicking the like button
+        if (e.target.closest('.like-button')) {
+            return;
+        }
+        viewArtwork(artwork.id);
+    });
+    
+    // Add click event to the like button
+    const likeButton = card.querySelector('.like-button');
+    if (likeButton) {
+        likeButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            likeSystem.toggleLike(artwork.id);
+        });
+    }
 
     return card;
 }
