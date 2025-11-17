@@ -1017,7 +1017,17 @@ document.addEventListener('DOMContentLoaded', function() {
     populateCommunityContent();
     audioSystem.init();
     likeSystem.init();
+    premiumSystem.init();
+    setupCardFormatting();
+    setupPaymentForm();
 });
+
+function setupPaymentForm() {
+    const paymentForm = document.getElementById('paymentForm');
+    if (paymentForm) {
+        paymentForm.addEventListener('submit', processPayment);
+    }
+}
 
 function initializeApp() {
     const languageSelect = document.getElementById('languageSelect');
@@ -2245,15 +2255,355 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ============================================
-// PLACEHOLDER FUNCTIONS FOR MODALS
+// PAYMENT SYSTEM AND PREMIUM FEATURES
+// ============================================
+const premiumSystem = {
+    isActive: false,
+    currentPlan: null,
+    selectedPlan: null,
+    
+    plans: {
+        basic: {
+            name: 'Basic',
+            price: 500,
+            period: 'month',
+            features: [
+                'Access to 50+ stories',
+                'Basic games',
+                'Standard audio',
+                'Community access',
+                'Save progress'
+            ]
+        },
+        premium: {
+            name: 'Premium',
+            price: 1200,
+            period: 'month',
+            features: [
+                'Access to 200+ stories',
+                'All games & activities',
+                'Advanced audio features',
+                'Priority support',
+                'Ad-free experience',
+                'Download stories offline',
+                'Exclusive premium stories',
+                'Custom avatars'
+            ]
+        },
+        family: {
+            name: 'Family',
+            price: 2500,
+            period: 'month',
+            features: [
+                'Up to 5 child accounts',
+                'All Premium features',
+                'Parent dashboard',
+                'Progress tracking',
+                'Custom content creation',
+                '24/7 support',
+                'Family challenges',
+                'Parental controls'
+            ]
+        }
+    },
+    
+    init() {
+        this.loadSubscription();
+        this.updatePremiumStatus();
+    },
+    
+    loadSubscription() {
+        const saved = localStorage.getItem('premiumSubscription');
+        if (saved) {
+            const data = JSON.parse(saved);
+            this.isActive = data.isActive;
+            this.currentPlan = data.currentPlan;
+        }
+    },
+    
+    saveSubscription() {
+        localStorage.setItem('premiumSubscription', JSON.stringify({
+            isActive: this.isActive,
+            currentPlan: this.currentPlan,
+            activatedDate: new Date().toISOString()
+        }));
+    },
+    
+    updatePremiumStatus() {
+        const premiumBtn = document.querySelector('.btn-premium');
+        if (premiumBtn) {
+            if (this.isActive) {
+                premiumBtn.innerHTML = '<i class="fas fa-crown"></i><span>Premium Active</span>';
+                premiumBtn.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+            }
+        }
+    },
+    
+    activatePremium(planType) {
+        this.isActive = true;
+        this.currentPlan = planType;
+        this.saveSubscription();
+        this.updatePremiumStatus();
+        showNotification(`${planType.charAt(0).toUpperCase() + planType.slice(1)} plan activated!`, 'success');
+    }
+};
+
+// ============================================
+// PAYMENT MODAL FUNCTIONS
 // ============================================
 function openPaymentModal() {
-    showNotification('Payment feature coming soon!', 'info');
+    const modal = document.getElementById('paymentModal');
+    if (!modal) {
+        showNotification('Payment system is loading...', 'info');
+        return;
+    }
+    
+    modal.style.display = 'block';
+    
+    // Reset to plans view
+    document.querySelector('.subscription-plans').style.display = 'block';
+    document.querySelector('.payment-section').style.display = 'none';
+    document.querySelector('.payment-success').style.display = 'none';
+    document.querySelector('.payment-error').style.display = 'none';
 }
 
 function closePaymentModal() {
     const modal = document.getElementById('paymentModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function selectPlan(planType, amount, period) {
+    premiumSystem.selectedPlan = {
+        planType: planType,
+        planName: planType.charAt(0).toUpperCase() + planType.slice(1),
+        amount: amount,
+        period: period
+    };
+    
+    // Update selected plan info
+    document.getElementById('selectedPlanName').textContent = premiumSystem.selectedPlan.planName;
+    document.getElementById('selectedPlanAmount').textContent = `₦${amount}/${period}`;
+    
+    // Show payment section
+    document.querySelector('.subscription-plans').style.display = 'none';
+    document.querySelector('.payment-section').style.display = 'block';
+}
+
+function goBackToPlans() {
+    document.querySelector('.subscription-plans').style.display = 'block';
+    document.querySelector('.payment-section').style.display = 'none';
+    document.querySelector('.payment-success').style.display = 'none';
+    document.querySelector('.payment-error').style.display = 'none';
+}
+
+function retryPayment() {
+    goBackToPlans();
+}
+
+// ============================================
+// FLUTTERWAVE PAYMENT PROCESSING
+// ============================================
+function processPayment(event) {
+    event.preventDefault();
+    
+    const cardName = document.getElementById('cardName').value;
+    const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+    const expiryDate = document.getElementById('expiryDate').value;
+    const cvv = document.getElementById('cvv').value;
+    const email = document.getElementById('paymentEmail').value;
+    const phone = document.getElementById('paymentPhone').value;
+    
+    // Validate form
+    if (!cardName || !cardNumber || !expiryDate || !cvv || !email || !phone) {
+        showNotification('Please fill in all required fields', 'error');
+        return;
+    }
+    
+    if (cardNumber.length < 13 || cardNumber.length > 19) {
+        showNotification('Please enter a valid card number', 'error');
+        return;
+    }
+    
+    if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
+        showNotification('Please enter a valid expiry date (MM/YY)', 'error');
+        return;
+    }
+    
+    if (cvv.length < 3 || cvv.length > 4) {
+        showNotification('Please enter a valid CVV', 'error');
+        return;
+    }
+    
+    // Show loading
+    showNotification('Processing payment...', 'info');
+    
+    // Simulate payment processing (in production, use actual Flutterwave API)
+    setTimeout(() => {
+        simulateFlutterwavePayment(premiumSystem.selectedPlan, {
+            name: cardName,
+            email: email,
+            phone: phone
+        });
+    }, 2000);
+}
+
+function simulateFlutterwavePayment(planData, customerData) {
+    // In production, this would integrate with Flutterwave's actual API
+    // For demo purposes, we'll simulate a successful payment
+    
+    const txRef = 'nigerianstories_' + Date.now();
+    
+    // Simulate API call delay
+    const success = Math.random() > 0.1; // 90% success rate for demo
+    
+    if (success) {
+        // Payment successful
+        premiumSystem.activatePremium(planData.planType);
+        showPaymentSuccess(planData);
+        
+        // Save transaction
+        saveTransaction({
+            txRef: txRef,
+            plan: planData.planName,
+            amount: planData.amount,
+            date: new Date().toISOString(),
+            status: 'successful'
+        });
+    } else {
+        // Payment failed
+        showPaymentError('Payment was declined. Please check your card details and try again.');
+    }
+}
+
+function showPaymentSuccess(planData) {
+    document.querySelector('.subscription-plans').style.display = 'none';
+    document.querySelector('.payment-section').style.display = 'none';
+    document.querySelector('.payment-error').style.display = 'none';
+    
+    const successDiv = document.getElementById('paymentSuccess');
+    successDiv.style.display = 'block';
+    
+    document.getElementById('successPlanName').textContent = planData.planName + ' Plan';
+    
+    const featuresList = document.getElementById('successFeaturesList');
+    const features = premiumSystem.plans[planData.planType].features;
+    featuresList.innerHTML = features.map(feature => `<li>${feature}</li>`).join('');
+}
+
+function showPaymentError(message) {
+    document.querySelector('.subscription-plans').style.display = 'none';
+    document.querySelector('.payment-section').style.display = 'none';
+    document.querySelector('.payment-success').style.display = 'none';
+    
+    const errorDiv = document.getElementById('paymentError');
+    errorDiv.style.display = 'block';
+    
+    document.getElementById('errorMessage').textContent = message;
+}
+
+function saveTransaction(transaction) {
+    let transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+    transactions.unshift(transaction);
+    localStorage.setItem('transactions', JSON.stringify(transactions.slice(0, 20)));
+}
+
+// ============================================
+// CARD FORMATTING
+// ============================================
+function setupCardFormatting() {
+    const cardNumberInput = document.getElementById('cardNumber');
+    const expiryInput = document.getElementById('expiryDate');
+    
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+    }
+    
+    if (expiryInput) {
+        expiryInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+    }
+}
+
+// ============================================
+// SUBSCRIPTION MANAGEMENT
+// ============================================
+function openSubscriptionModal() {
+    const modal = document.getElementById('subscriptionModal');
+    if (!modal) return;
+    
+    modal.style.display = 'block';
+    updateSubscriptionDisplay();
+}
+
+function closeSubscriptionModal() {
+    const modal = document.getElementById('subscriptionModal');
     if (modal) modal.style.display = 'none';
+}
+
+function updateSubscriptionDisplay() {
+    if (premiumSystem.isActive && premiumSystem.currentPlan) {
+        const plan = premiumSystem.plans[premiumSystem.currentPlan];
+        document.getElementById('currentPlanName').textContent = plan.name;
+        document.getElementById('currentPlanStatus').textContent = 'Active';
+        document.getElementById('currentPlanAmount').textContent = `₦${plan.price}`;
+        
+        const activatedDate = new Date();
+        const nextBilling = new Date(activatedDate.getTime() + (30 * 24 * 60 * 60 * 1000));
+        document.getElementById('nextBillingDate').textContent = nextBilling.toLocaleDateString();
+        
+        const cancelBtn = document.getElementById('cancelBtn');
+        if (cancelBtn) cancelBtn.style.display = 'inline-block';
+    }
+    
+    updateBillingHistory();
+}
+
+function updateBillingHistory() {
+    const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+    const billingList = document.getElementById('billingList');
+    
+    if (!billingList) return;
+    
+    if (transactions.length === 0) {
+        billingList.innerHTML = '<p>No billing history available.</p>';
+        return;
+    }
+    
+    billingList.innerHTML = transactions.map(tx => `
+        <div class="billing-item">
+            <div class="billing-date">${new Date(tx.date).toLocaleDateString()}</div>
+            <div class="billing-plan">${tx.plan} Plan</div>
+            <div class="billing-amount">₦${tx.amount}</div>
+            <div class="billing-status ${tx.status}">${tx.status}</div>
+        </div>
+    `).join('');
+}
+
+function manageBilling() {
+    openSubscriptionModal();
+}
+
+function cancelSubscription() {
+    if (confirm('Are you sure you want to cancel your subscription? You will lose access to premium features.')) {
+        premiumSystem.isActive = false;
+        premiumSystem.currentPlan = null;
+        premiumSystem.saveSubscription();
+        premiumSystem.updatePremiumStatus();
+        
+        showNotification('Subscription cancelled successfully', 'success');
+        closeSubscriptionModal();
+    }
 }
 
 function closeUserModal() {
@@ -2271,10 +2621,23 @@ function closeAudioModal() {
     if (modal) modal.style.display = 'none';
 }
 
-function closeSubscriptionModal() {
-    const modal = document.getElementById('subscriptionModal');
-    if (modal) modal.style.display = 'none';
+// ============================================
+// PREMIUM BADGE DISPLAY
+// ============================================
+function showPremiumBadge() {
+    if (premiumSystem.isActive) {
+        const userName = document.getElementById('userName');
+        if (userName && !userName.querySelector('.premium-badge')) {
+            const badge = document.createElement('span');
+            badge.className = 'premium-badge';
+            badge.innerHTML = ' <i class="fas fa-crown" style="color: #FFD700; font-size: 0.8em;"></i>';
+            userName.appendChild(badge);
+        }
+    }
 }
+
+// Update premium status when page loads
+setTimeout(showPremiumBadge, 1000);
 
 // ============================================
 // EXPORT SYSTEMS FOR GLOBAL ACCESS
